@@ -278,10 +278,13 @@
         <h2>现在，把全网音乐装进桌面</h2>
         <p>免费、开源、持续更新。下载 MaMoMusic，开始你的跨平台听歌之旅。</p>
         <div class="cta-actions">
-          <a href="https://github.com/Cagent9527/MaMoMusicPlayer" class="btn btn-primary" target="_blank" rel="noopener">⬇ 下载 Windows 客户端</a>
+          <a href="https://github.com/Cagent9527/MaMoMusicPlayer/releases/latest/download/MaMoMusic.exe" class="btn btn-primary" target="_blank" rel="noopener" download>⬇ 下载 Windows 客户端</a>
           <a href="https://github.com/Cagent9527/MaMoMusicPlayer" class="btn btn-ghost" target="_blank" rel="noopener">查看源码 / 星标 ★</a>
         </div>
-        <p class="cta-note">开源地址：github.com/Cagent9527/MaMoMusicPlayer</p>
+        <p class="cta-note">
+          <span class="ver-badge">最新版本 <b id="release-version">v1.0.0</b></span>
+          <span class="ver-dot">·</span> 开源地址：github.com/Cagent9527/MaMoMusicPlayer
+        </p>
       </div>
     </section>
   </main>
@@ -305,5 +308,16 @@
   </footer>
 
   <script src="assets/js/main.js"></script>
+  <script>
+    // 自动同步官网显示的版本号为 GitHub Releases 最新版（无需改页面）
+    (function () {
+      var el = document.getElementById('release-version');
+      if (!el) return;
+      fetch('https://api.github.com/repos/Cagent9527/MaMoMusicPlayer/releases/latest')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) { if (d && d.tag_name) el.textContent = d.tag_name; })
+        .catch(function () { /* 离线/限流时保留静态兜底版本 */ });
+    })();
+  </script>
 </body>
 </html>
