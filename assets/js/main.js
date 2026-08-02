@@ -2,24 +2,26 @@
 (function () {
   "use strict";
 
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   // ---------- Particle network background ----------
   const canvas = document.getElementById("bg-canvas");
-  if (canvas && canvas.getContext) {
+  if (canvas && canvas.getContext && !reduceMotion) {
     const ctx = canvas.getContext("2d");
     let w, h, particles, raf;
-    const COLORS = ["#8b5cf6", "#ec4899", "#22d3ee"];
+    const COLORS = ["#a78bfa", "#f0abfc", "#67e8f9"];
     const mouse = { x: -9999, y: -9999 };
 
     function resize() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-      const count = Math.min(110, Math.floor((w * h) / 14000));
+      const count = Math.min(90, Math.floor((w * h) / 18000));
       particles = Array.from({ length: count }, () => ({
         x: Math.random() * w,
         y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.45,
-        vy: (Math.random() - 0.5) * 0.45,
-        r: Math.random() * 1.8 + 0.7,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: Math.random() * 1.6 + 0.6,
         c: COLORS[(Math.random() * COLORS.length) | 0],
       }));
     }
@@ -32,30 +34,26 @@
         if (p.x < 0 || p.x > w) p.vx *= -1;
         if (p.y < 0 || p.y > h) p.vy *= -1;
 
-        // mouse repel
         const dxm = p.x - mouse.x, dym = p.y - mouse.y;
         const dm = Math.hypot(dxm, dym);
-        if (dm < 120) {
-          p.x += (dxm / dm) * 1.4;
-          p.y += (dym / dm) * 1.4;
-        }
+        if (dm < 130) { p.x += (dxm / dm) * 1.1; p.y += (dym / dm) * 1.1; }
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = p.c;
-        ctx.globalAlpha = 0.85;
+        ctx.globalAlpha = 0.7;
         ctx.fill();
 
         for (let j = i + 1; j < particles.length; j++) {
           const q = particles[j];
           const dx = p.x - q.x, dy = p.y - q.y;
           const d = Math.hypot(dx, dy);
-          if (d < 130) {
+          if (d < 140) {
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(q.x, q.y);
             ctx.strokeStyle = p.c;
-            ctx.globalAlpha = (1 - d / 130) * 0.22;
+            ctx.globalAlpha = (1 - d / 140) * 0.16;
             ctx.lineWidth = 1;
             ctx.stroke();
           }
@@ -72,6 +70,23 @@
     step();
   }
 
+  // ---------- Cursor glow (smooth follow) ----------
+  const glow = document.getElementById("cursor-glow");
+  if (glow && !reduceMotion) {
+    let gx = window.innerWidth / 2, gy = window.innerHeight / 2, tx = gx, ty = gy, on = false;
+    window.addEventListener("mousemove", (e) => {
+      tx = e.clientX; ty = e.clientY;
+      if (!on) { glow.style.opacity = "1"; on = true; }
+    });
+    window.addEventListener("mouseleave", () => { glow.style.opacity = "0"; on = false; });
+    (function loop() {
+      gx += (tx - gx) * 0.12;
+      gy += (ty - gy) * 0.12;
+      glow.style.transform = `translate3d(${gx}px, ${gy}px, 0) translate(-50%, -50%)`;
+      requestAnimationFrame(loop);
+    })();
+  }
+
   // ---------- Nav scroll state + mobile toggle ----------
   const nav = document.getElementById("nav");
   const toggle = document.getElementById("nav-toggle");
@@ -86,6 +101,29 @@
     );
   }
 
+  // ---------- Nav active section highlight ----------
+  const navLinks = document.querySelectorAll(".nav-link");
+  if (navLinks.length && "IntersectionObserver" in window) {
+    const map = {};
+    navLinks.forEach((l) => {
+      const id = l.getAttribute("href").slice(1);
+      const sec = document.getElementById(id);
+      if (sec) map[id] = l;
+    });
+    const navObs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) {
+            navLinks.forEach((l) => l.classList.remove("active"));
+            if (map[en.target.id]) map[en.target.id].classList.add("active");
+          }
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 }
+    );
+    Object.keys(map).forEach((id) => navObs.observe(document.getElementById(id)));
+  }
+
   // ---------- Scroll reveal ----------
   const reveals = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window) {
@@ -93,7 +131,7 @@
       (entries) => {
         entries.forEach((en, i) => {
           if (en.isIntersecting) {
-            setTimeout(() => en.target.classList.add("in"), (i % 6) * 70);
+            setTimeout(() => en.target.classList.add("in"), (i % 6) * 80);
             io.unobserve(en.target);
           }
         });
@@ -110,7 +148,7 @@
   function animateCount(el) {
     const to = parseInt(el.dataset.to, 10) || 0;
     const suffix = el.dataset.suffix || "";
-    const dur = 1200;
+    const dur = 1400;
     const start = performance.now();
     function tick(now) {
       const t = Math.min(1, (now - start) / dur);
