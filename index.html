@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MaMoMusic · 一个播放器，听遍全网音乐</title>
+  <meta name="description" content="MaMoMusic 是基于 Wails v3 打造的跨平台桌面音乐播放器，聚合酷狗概念版、网易云音乐、酷我音乐三大平台曲库，支持 3D 粒子主题、Live2D 看板娘、桌面歌词与云端歌单同步。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <!-- Animated background canvas -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <div class="bg-orb orb-1" aria-hidden="true"></div>
+  <div class="bg-orb orb-2" aria-hidden="true"></div>
+  <div class="bg-orb orb-3" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <!-- Navbar -->
+  <header class="nav" id="nav">
+    <a href="#home" class="nav-brand">
+      <span class="brand-mark"></span>
+      <span class="brand-text">MaMo<span class="brand-accent">Music</span></span>
+    </a>
+    <nav class="nav-links" id="nav-links">
+      <a href="#features">特性</a>
+      <a href="#platforms">平台</a>
+      <a href="#visual">视觉</a>
+      <a href="#playlists">歌单</a>
+      <a href="#tech">技术</a>
+      <a href="#download" class="nav-cta">下载</a>
+    </nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="菜单">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="home">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="pill reveal"><span class="dot"></span> 基于 Wails v3 · 原生桌面应用</span>
+          <h1 class="hero-title reveal">
+            一个播放器，<br /><span class="grad-text">听遍全网音乐</span>
+          </h1>
+          <p class="hero-sub reveal">
+            MaMoMusic 聚合酷狗概念版、网易云音乐、酷我音乐三大平台曲库，
+            用 3D 粒子主题、Live2D 看板娘与桌面歌词，重新定义你的桌面听歌体验。
+          </p>
+          <div class="hero-actions reveal">
+            <a href="#download" class="btn btn-primary">下载客户端</a>
+            <a href="https://github.com/Cagent9527/MaMoMusicPlayer" class="btn btn-ghost" target="_blank" rel="noopener">在 GitHub 查看 →</a>
+          </div>
+          <div class="hero-stats reveal">
+            <div class="stat"><b class="count" data-to="3">0</b><span>聚合平台</span></div>
+            <div class="stat"><b class="count" data-to="9">0</b><span>核心特性</span></div>
+            <div class="stat"><b class="count" data-to="60" data-suffix="fps">0</b><span>粒子律动</span></div>
+          </div>
+        </div>
+
+        <!-- CSS player mock -->
+        <div class="hero-visual reveal">
+          <div class="player-card">
+            <div class="pc-top">
+              <span class="pc-tag">正在播放</span>
+              <span class="pc-platform">酷狗概念版</span>
+            </div>
+            <div class="pc-art">
+              <div class="vinyl"></div>
+              <div class="pc-art-grad"></div>
+            </div>
+            <div class="pc-meta">
+              <div class="pc-title">夜空中最亮的星</div>
+              <div class="pc-artist">逃跑计划 · 华语流行</div>
+            </div>
+            <div class="pc-wave" id="pc-wave"></div>
+            <div class="pc-progress"><span style="width:42%"></span></div>
+            <div class="pc-time"><span>01:52</span><span>04:21</span></div>
+            <div class="pc-controls">
+              <span class="pc-btn">⏮</span>
+              <span class="pc-btn pc-play">▶</span>
+              <span class="pc-btn">⏭</span>
+              <span class="pc-btn pc-heart">♥</span>
+            </div>
+          </div>
+          <div class="float-chip chip-a">3D 粒子主题</div>
+          <div class="float-chip chip-b">Live2D 看板娘</div>
+        </div>
+      </div>
+      <a href="#features" class="scroll-hint" aria-label="向下滚动">⌄</a>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+      <div class="section-head reveal">
+        <span class="eyebrow">核心特性</span>
+        <h2>为「听歌」而生的每一处细节</h2>
+        <p>从曲库聚合到沉浸视觉，MaMoMusic 把分散的音乐平台收进一个优雅的桌面空间。</p>
+      </div>
+      <div class="cards">
+        <article class="card reveal">
+          <div class="card-ico">🎧</div>
+          <h3>多平台曲库聚合</h3>
+          <p>酷狗概念版、网易云音乐、酷我音乐一站搜索与播放，跨平台结果统一呈现，无需反复切换 App。</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico">📜</div>
+          <h3>全屏逐字歌词</h3>
+          <p>歌词随旋律精准滚动，支持 0.75×–2.0× 变速，热门 / 最新评论与逐楼回复一应俱全。</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico">✨</div>
+          <h3>3D 粒子主题</h3>
+          <p>音浪地形网格（Sonic Grid）实时随音乐律动，磨砂玻璃强度可由模糊度滑块随心调节。</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico">🌸</div>
+          <h3>Live2D 看板娘</h3>
+          <p>桌面陪伴式二次元角色，灵动交互，让播放器不再只是工具，而是有温度的伙伴。</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico">🪟</div>
+          <h3>桌面歌词透明窗</h3>
+          <p>独立悬浮透明窗，背景实时取色，沉浸式桌面歌词，听歌时也能优雅地「看见」旋律。</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico">💞</div>
+          <h3>歌单与云端同步</h3>
+          <p>自建歌单，酷狗概念版 / 网易云云端同步；「我喜欢」一键红心收藏，跨设备不丢失。</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico">💬</div>
+          <h3>评论与互动</h3>
+          <p>原平台评论流完整呈现，支持「查看 N 条回复」逐楼展开，听歌也能逛评论区。</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico">🔍</div>
+          <h3>每日推荐 & 发现</h3>
+          <p>每日推荐歌单常看常新，歌手 A–Z 分组可滚动浏览，遇见更多好音乐。</p>
+        </article>
+        <article class="card reveal">
+          <div class="card-ico">💿</div>
+          <h3>本地音乐</h3>
+          <p>一键导入本地曲库，离线畅听，平台曲库与本地收藏在同一个播放列表里无缝衔接。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- PLATFORMS -->
+    <section class="section section-alt" id="platforms">
+      <div class="section-head reveal">
+        <span class="eyebrow">多平台支持</span>
+        <h2>三大平台，一个播放器</h2>
+        <p>登录你的账号，把分散在各家的收藏与歌单收拢到 MaMoMusic。</p>
+      </div>
+      <div class="platforms">
+        <div class="platform reveal">
+          <div class="pf-logo pf-kg">酷</div>
+          <h3>酷狗概念版</h3>
+          <p>日推、歌单、评论、红心收藏与云端歌单同步，概念会员标识一目了然。</p>
+          <span class="pf-badge">完整云端同步</span>
+        </div>
+        <div class="platform reveal">
+          <div class="pf-logo pf-ne">云</div>
+          <h3>网易云音乐</h3>
+          <p>精准歌词、楼层回复评论、红心与每日推荐，评论区氛围原汁原味。</p>
+          <span class="pf-badge">楼层回复</span>
+        </div>
+        <div class="platform reveal">
+          <div class="pf-logo pf-kw">我</div>
+          <h3>酷我音乐</h3>
+          <p>歌手 A–Z 分组浏览、榜单与搜索，补全你的曲库版图。</p>
+          <span class="pf-badge">A–Z 歌手</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- VISUAL EXPERIENCE -->
+    <section class="section" id="visual">
+      <div class="section-head reveal">
+        <span class="eyebrow">视觉体验</span>
+        <h2>把「听」变成一场视觉盛宴</h2>
+        <p>MaMoMusic 的界面不止好看——它会跟着音乐呼吸。</p>
+      </div>
+      <div class="visual-grid">
+        <div class="visual-card v-big reveal">
+          <div class="vc-glow"></div>
+          <h3>3D 粒子音浪</h3>
+          <p>Sonic Grid 地形网格随节拍起伏，磨砂玻璃随模糊度滑块实时变化，每一次播放都是专属视觉。</p>
+        </div>
+        <div class="visual-card reveal">
+          <div class="vc-emoji">🌸</div>
+          <h3>Live2D 看板娘</h3>
+          <p>灵动二次元伙伴，桌面常驻。</p>
+        </div>
+        <div class="visual-card reveal">
+          <div class="vc-emoji">🪟</div>
+          <h3>桌面歌词窗</h3>
+          <p>透明悬浮，背景实时取色。</p>
+        </div>
+        <div class="visual-card reveal">
+          <div class="vc-emoji">📊</div>
+          <h3>律动可视化</h3>
+          <p>节奏随拍跳动，桌面也有舞台感。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLAYLISTS -->
+    <section class="section section-alt" id="playlists">
+      <div class="split">
+        <div class="split-copy reveal">
+          <span class="eyebrow">歌单与收藏</span>
+          <h2>你的歌单，<span class="grad-text">永不走散</span></h2>
+          <p>自建歌单随心整理，酷狗概念版与网易云支持云端同步——换设备、重装也不丢失。
+            「我喜欢」一键红心，收藏的每一首都在原地等你。</p>
+          <ul class="check-list">
+            <li>自建歌单 + 云端同步（酷狗概念版 / 网易云）</li>
+            <li>「我喜欢」红心收藏，跨平台统一</li>
+            <li>本地曲库与平台歌单同一列表无缝衔接</li>
+            <li>歌单内曲目增删实时回写云端</li>
+          </ul>
+        </div>
+        <div class="split-visual reveal">
+          <div class="pl-mock">
+            <div class="pl-row pl-head">我的歌单</div>
+            <div class="pl-row"><span class="pl-ic">💚</span> 我喜欢 <em>328 首</em></div>
+            <div class="pl-row"><span class="pl-ic">🌊</span> 深夜电台 <em>云端</em></div>
+            <div class="pl-row"><span class="pl-ic">🔥</span> 华语流行精选 <em>云端</em></div>
+            <div class="pl-row"><span class="pl-ic">🎹</span> 本地收藏 <em>本地</em></div>
+            <div class="pl-row pl-add">＋ 新建歌单</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TECH -->
+    <section class="section" id="tech">
+      <div class="section-head reveal">
+        <span class="eyebrow">技术栈</span>
+        <h2>轻量、原生、跨平台</h2>
+        <p>MaMoMusic 基于 Wails v3 构建：Go 后端提供性能与系统能力，Vue 3 前端承载流畅界面，
+          打包为真正的原生桌面应用，启动快、占用小。</p>
+      </div>
+      <div class="tech-row reveal">
+        <div class="tech-pill"><b>Wails v3</b><span>桌面框架</span></div>
+        <div class="tech-pill"><b>Go</b><span>后端</span></div>
+        <div class="tech-pill"><b>Vue 3</b><span>前端</span></div>
+        <div class="tech-pill"><b>TypeScript</b><span>类型安全</span></div>
+        <div class="tech-pill"><b>Windows</b><span>原生客户端</span></div>
+      </div>
+    </section>
+
+    <!-- DOWNLOAD -->
+    <section class="section cta-section" id="download">
+      <div class="cta-card reveal">
+        <div class="cta-glow"></div>
+        <h2>现在，把全网音乐装进桌面</h2>
+        <p>免费、开源、持续更新。下载 MaMoMusic，开始你的跨平台听歌之旅。</p>
+        <div class="cta-actions">
+          <a href="https://github.com/Cagent9527/MaMoMusicPlayer" class="btn btn-primary" target="_blank" rel="noopener">⬇ 下载 Windows 客户端</a>
+          <a href="https://github.com/Cagent9527/MaMoMusicPlayer" class="btn btn-ghost" target="_blank" rel="noopener">查看源码 / 星标 ★</a>
+        </div>
+        <p class="cta-note">开源地址：github.com/Cagent9527/MaMoMusicPlayer</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="brand-mark"></span>
+        <span class="brand-text">MaMo<span class="brand-accent">Music</span></span>
+        <p>一个播放器，听遍全网音乐。</p>
+      </div>
+      <div class="footer-links">
+        <a href="#features">特性</a>
+        <a href="#platforms">平台</a>
+        <a href="#visual">视觉</a>
+        <a href="#download">下载</a>
+        <a href="https://github.com/Cagent9527/MaMoMusicPlayer" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 MaMoMusic · Built with Wails v3 + Vue 3</div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
