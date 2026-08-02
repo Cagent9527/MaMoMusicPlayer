@@ -6,15 +6,19 @@
   <title>MaMoMusic · 一个播放器，听遍全网音乐</title>
   <meta name="description" content="MaMoMusic 是基于 Wails v3 打造的跨平台桌面音乐播放器，聚合酷狗概念版、网易云音乐、酷我音乐三大平台曲库，支持 3D 粒子主题、Live2D 看板娘、桌面歌词与云端歌单同步。" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
-  <!-- Animated background canvas -->
+  <!-- Texture & light layers -->
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
   <div class="bg-orb orb-1" aria-hidden="true"></div>
   <div class="bg-orb orb-2" aria-hidden="true"></div>
   <div class="bg-orb orb-3" aria-hidden="true"></div>
   <div class="bg-grid" aria-hidden="true"></div>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
 
   <!-- Navbar -->
   <header class="nav" id="nav">
@@ -23,11 +27,11 @@
       <span class="brand-text">MaMo<span class="brand-accent">Music</span></span>
     </a>
     <nav class="nav-links" id="nav-links">
-      <a href="#features">特性</a>
-      <a href="#platforms">平台</a>
-      <a href="#visual">视觉</a>
-      <a href="#playlists">歌单</a>
-      <a href="#tech">技术</a>
+      <a href="#features" class="nav-link">特性</a>
+      <a href="#platforms" class="nav-link">平台</a>
+      <a href="#visual" class="nav-link">视觉</a>
+      <a href="#playlists" class="nav-link">歌单</a>
+      <a href="#tech" class="nav-link">技术</a>
       <a href="#download" class="nav-cta">下载</a>
     </nav>
     <button class="nav-toggle" id="nav-toggle" aria-label="菜单">
@@ -40,13 +44,13 @@
     <section class="hero" id="home">
       <div class="hero-inner">
         <div class="hero-copy">
-          <span class="pill reveal"><span class="dot"></span> 基于 Wails v3 · 原生桌面应用</span>
+          <span class="pill reveal"><span class="dot"></span> Wails v3 · 原生桌面应用</span>
           <h1 class="hero-title reveal">
             一个播放器，<br /><span class="grad-text">听遍全网音乐</span>
           </h1>
           <p class="hero-sub reveal">
-            MaMoMusic 聚合酷狗概念版、网易云音乐、酷我音乐三大平台曲库，
-            用 3D 粒子主题、Live2D 看板娘与桌面歌词，重新定义你的桌面听歌体验。
+            聚合酷狗概念版、网易云音乐、酷我音乐三大平台曲库，
+            以 3D 粒子主题、Live2D 看板娘与桌面歌词，重新定义你的桌面听歌体验。
           </p>
           <div class="hero-actions reveal">
             <a href="#download" class="btn btn-primary">下载客户端</a>
@@ -59,16 +63,21 @@
           </div>
         </div>
 
-        <!-- CSS player mock -->
+        <!-- Player mock -->
         <div class="hero-visual reveal">
           <div class="player-card">
+            <div class="pc-glow"></div>
             <div class="pc-top">
-              <span class="pc-tag">正在播放</span>
+              <span class="pc-tag"><span class="pc-eq"><i></i><i></i><i></i></span> 正在播放</span>
               <span class="pc-platform">酷狗概念版</span>
             </div>
             <div class="pc-art">
-              <div class="vinyl"></div>
+              <div class="vinyl">
+                <div class="vinyl-hole"></div>
+                <div class="vinyl-shine"></div>
+              </div>
               <div class="pc-art-grad"></div>
+              <div class="pc-art-ring"></div>
             </div>
             <div class="pc-meta">
               <div class="pc-title">夜空中最亮的星</div>
@@ -84,11 +93,19 @@
               <span class="pc-btn pc-heart">♥</span>
             </div>
           </div>
-          <div class="float-chip chip-a">3D 粒子主题</div>
-          <div class="float-chip chip-b">Live2D 看板娘</div>
+          <div class="float-chip chip-a">
+            <svg viewBox="0 0 24 24" class="chip-ico"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg>
+            3D 粒子主题
+          </div>
+          <div class="float-chip chip-b">
+            <svg viewBox="0 0 24 24" class="chip-ico"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10Z"/></svg>
+            Live2D 看板娘
+          </div>
         </div>
       </div>
-      <a href="#features" class="scroll-hint" aria-label="向下滚动">⌄</a>
+      <a href="#features" class="scroll-hint" aria-label="向下滚动">
+        <span></span>
+      </a>
     </section>
 
     <!-- FEATURES -->
@@ -100,47 +117,47 @@
       </div>
       <div class="cards">
         <article class="card reveal">
-          <div class="card-ico">🎧</div>
+          <span class="card-ico"><svg viewBox="0 0 24 24"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="M3 13l9 5 9-5"/></svg></span>
           <h3>多平台曲库聚合</h3>
           <p>酷狗概念版、网易云音乐、酷我音乐一站搜索与播放，跨平台结果统一呈现，无需反复切换 App。</p>
         </article>
         <article class="card reveal">
-          <div class="card-ico">📜</div>
+          <span class="card-ico"><svg viewBox="0 0 24 24"><path d="M4 6h11M4 12h11M4 18h7"/><path d="M18 15l3 3-3 3" transform="translate(-2 -2)"/></svg></span>
           <h3>全屏逐字歌词</h3>
           <p>歌词随旋律精准滚动，支持 0.75×–2.0× 变速，热门 / 最新评论与逐楼回复一应俱全。</p>
         </article>
         <article class="card reveal">
-          <div class="card-ico">✨</div>
+          <span class="card-ico"><svg viewBox="0 0 24 24"><path d="M3 16c3-4 6-4 9 0s6 4 9 0"/><path d="M3 11c3-4 6-4 9 0s6 4 9 0"/></svg></span>
           <h3>3D 粒子主题</h3>
           <p>音浪地形网格（Sonic Grid）实时随音乐律动，磨砂玻璃强度可由模糊度滑块随心调节。</p>
         </article>
         <article class="card reveal">
-          <div class="card-ico">🌸</div>
+          <span class="card-ico"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10Z"/></svg></span>
           <h3>Live2D 看板娘</h3>
           <p>桌面陪伴式二次元角色，灵动交互，让播放器不再只是工具，而是有温度的伙伴。</p>
         </article>
         <article class="card reveal">
-          <div class="card-ico">🪟</div>
+          <span class="card-ico"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 9h16"/></svg></span>
           <h3>桌面歌词透明窗</h3>
           <p>独立悬浮透明窗，背景实时取色，沉浸式桌面歌词，听歌时也能优雅地「看见」旋律。</p>
         </article>
         <article class="card reveal">
-          <div class="card-ico">💞</div>
+          <span class="card-ico"><svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1 .5-8 5 5 0 0 1 9.5 1 3.5 3.5 0 0 1-.5 7H7Z"/><path d="M9 14l2 2 4-4"/></svg></span>
           <h3>歌单与云端同步</h3>
           <p>自建歌单，酷狗概念版 / 网易云云端同步；「我喜欢」一键红心收藏，跨设备不丢失。</p>
         </article>
         <article class="card reveal">
-          <div class="card-ico">💬</div>
+          <span class="card-ico"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5Z"/><path d="M8 9h8M8 12.5h5"/></svg></span>
           <h3>评论与互动</h3>
           <p>原平台评论流完整呈现，支持「查看 N 条回复」逐楼展开，听歌也能逛评论区。</p>
         </article>
         <article class="card reveal">
-          <div class="card-ico">🔍</div>
+          <span class="card-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m15 9-2 4-4 2 2-4 4-2Z"/></svg></span>
           <h3>每日推荐 & 发现</h3>
           <p>每日推荐歌单常看常新，歌手 A–Z 分组可滚动浏览，遇见更多好音乐。</p>
         </article>
         <article class="card reveal">
-          <div class="card-ico">💿</div>
+          <span class="card-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></svg></span>
           <h3>本地音乐</h3>
           <p>一键导入本地曲库，离线畅听，平台曲库与本地收藏在同一个播放列表里无缝衔接。</p>
         </article>
@@ -186,21 +203,22 @@
       <div class="visual-grid">
         <div class="visual-card v-big reveal">
           <div class="vc-glow"></div>
+          <span class="vc-ico"><svg viewBox="0 0 24 24"><path d="M3 16c3-4 6-4 9 0s6 4 9 0"/><path d="M3 11c3-4 6-4 9 0s6 4 9 0"/></svg></span>
           <h3>3D 粒子音浪</h3>
           <p>Sonic Grid 地形网格随节拍起伏，磨砂玻璃随模糊度滑块实时变化，每一次播放都是专属视觉。</p>
         </div>
         <div class="visual-card reveal">
-          <div class="vc-emoji">🌸</div>
+          <span class="vc-ico"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10Z"/></svg></span>
           <h3>Live2D 看板娘</h3>
           <p>灵动二次元伙伴，桌面常驻。</p>
         </div>
         <div class="visual-card reveal">
-          <div class="vc-emoji">🪟</div>
+          <span class="vc-ico"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 9h16"/></svg></span>
           <h3>桌面歌词窗</h3>
           <p>透明悬浮，背景实时取色。</p>
         </div>
         <div class="visual-card reveal">
-          <div class="vc-emoji">📊</div>
+          <span class="vc-ico"><svg viewBox="0 0 24 24"><path d="M4 18V6M9 18V9M14 18V4M19 18v-7"/></svg></span>
           <h3>律动可视化</h3>
           <p>节奏随拍跳动，桌面也有舞台感。</p>
         </div>
@@ -256,6 +274,7 @@
     <section class="section cta-section" id="download">
       <div class="cta-card reveal">
         <div class="cta-glow"></div>
+        <span class="eyebrow">开始使用</span>
         <h2>现在，把全网音乐装进桌面</h2>
         <p>免费、开源、持续更新。下载 MaMoMusic，开始你的跨平台听歌之旅。</p>
         <div class="cta-actions">
