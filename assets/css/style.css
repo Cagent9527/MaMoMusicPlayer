@@ -404,6 +404,16 @@ main, .nav, .footer { position: relative; z-index: 2; }
 .cta-card p { color: var(--muted); margin: 18px 0 34px; font-size: 16.5px; line-height: 1.8; }
 .cta-actions { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
 .cta-note { margin-top: 28px; font-size: 13px; color: var(--muted); letter-spacing: .5px; }
+.ver-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 12px; border-radius: 999px;
+  background: linear-gradient(120deg, rgba(139,92,246,.16), rgba(217,70,239,.14));
+  border: 1px solid rgba(217,70,239,.28);
+  color: var(--text-soft); font-size: 12px; letter-spacing: .4px;
+  backdrop-filter: blur(8px);
+}
+.ver-badge b { color: #fff; font-weight: 700; }
+.ver-dot { margin: 0 8px; opacity: .5; }
 
 /* ---------- Footer ---------- */
 .footer { border-top: 1px solid var(--border); background: rgba(5,5,8,.6); padding: 60px clamp(18px, 4vw, 52px) 30px; backdrop-filter: blur(10px); }
